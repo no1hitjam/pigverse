@@ -7,6 +7,7 @@ __lua__
 -- constants
 
 TILE_SIZE = 10
+STAGE_SIZE = 12
 
 
 -- start server --
@@ -226,12 +227,15 @@ end
 -- start draw 
  
 function draw_player(player)
-	spr(1, player.x, player.y, 1, 1, player.flip, false)
+	x = player.x - players[your_id].x + STAGE_SIZE / 2 * TILE_SIZE
+	y = player.y - players[your_id].y + STAGE_SIZE / 2 * TILE_SIZE
+	spr(1, x, y, 1, 1, player.flip, false)
 end
  
 function _draw()
 	cls()
-	map(0, 0)
+	map(players[your_id].x / TILE_SIZE, players[your_id].y / TILE_SIZE)
+	--map(2, 2)
 	foreach(players, draw_player)
 	for k,v in pairs(players) do
 		draw_player(v)
