@@ -1,1 +1,1 @@
-- Add <script async type="text/javascript" src="pico8comjs.js"></script> to your html container.
+<script async type="text/javascript" src="pico8comjs.js"></script> <!-- Add to your html container. -->

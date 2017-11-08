@@ -93,8 +93,6 @@ end
 function _init()
 end
 
-x=64 y=64
-
 
 
 -- end server
@@ -107,14 +105,16 @@ function random_int()
 end
 
 function msg_arg(msg, idx)
-	if (msg==nil) return nil
-	split_msg=split_str(msg, "_");	
-	if idx>=0 and idx<#msg then
-		return split_msg[idx]
-	end
-	return nil
+	if (msg == nil) return nil
+	
+	split_msg = split_str(msg, "_");	
+	
+	--for k,v in pairs(split_msg) do
+	--	print("msg_arg: "..idx..", "..k.."="..v)
+	--end
+	
+	return split_msg[idx]
 end
-
 
 -- end utilities
 
@@ -131,39 +131,41 @@ function get_id_letter()
 end
 
 function new_player_id()
-	new_id = get_id_letter()
-	new_id = new_id..get_id_letter()
-	new_id = new_id..get_id_letter()
+	new_id = get_id_letter()..get_id_letter()..get_id_letter()
 	if (players[new_id] == nil) then
 		return new_id
 	end
 	return new_player_id()
 end
 
-id = new_player_id()
-players[id]={}
-players[id].x=64
-players[id].y=64
-omsg = id..'_id'
+function spawn_player(id)
+	print(id.." joined game")
+	players[id]={}
+	players[id].x = abs(random_int()) % 10 + 64
+	players[id].y = abs(random_int()) % 10 + 64
+end
+
+function ping_id()
+	send_msg(your_id..'_id')
+end
+
+
+
 -- end players
 
 
 -- start game
  
 function process_input()
-
-	id_arg = msg_arg(omsg, 0)
-	arg1 = msg_arg(omsg, 1)
-	if (players[id_arg] != nil) then
-		if (arg1=="id") then
-			players[id_arg]={}
-			players[id_arg].x=64
-			players[id_arg].y=64
-		end
-	end
-	
-	id_arg = msg_arg(imsg, 0)
-	arg1 = msg_arg(imgs, 1)
+	--print(imsg)
+	id_arg = msg_arg(imsg, 1)
+	arg1 = msg_arg(imsg, 2)
+	--if (id_arg != nil) then
+	--	print("id: "..id_arg)
+	--end
+	--if (arg1 != nil) then
+	--	print("arg1"..arg1)
+	--end
 	if (players[id_arg] != nil) then
 		if (arg1=="left") then
 			players[id_arg].x -= 10
@@ -178,24 +180,35 @@ function process_input()
 			players[id_arg].y += 10
 		end
 	end
+	if (arg1 == "id") then
+		if (players[id_arg] == nil) then
+			spawn_player(id_arg)
+			ping_id()
+		end
+	end
 end
 
-process_input()
+-- init game
+your_id = new_player_id()
+ping_id()
+spawn_player(your_id)
+
  
 function _update60()	
- if (btnp(0)) then 
-		send_msg(id.."_left")
+	if (btnp(0)) then 
+		send_msg(your_id.."_left")
 	end
 	if (btnp(1)) then 
-		send_msg(id.."_right")
+		send_msg(your_id.."_right")
 	end 	
 	if (btnp(2)) then 
-		send_msg(id.."_up")
+		send_msg(your_id.."_up")
 	end
 	if (btnp(3)) then 
-		send_msg(id.."_down")
+		send_msg(your_id.."_down")
 	end 	
- --call on update
+	
+	--call on update
 	update_msgs()
 end
 
@@ -209,16 +222,11 @@ function draw_player(player)
 end
  
 function _draw()
-	--cls()
+	cls()
 	foreach(players, draw_player)
 	for k,v in pairs(players) do
 		draw_player(v)
 	end
-	
-	--spr(1, 0, 0)
-	--spr(1, players[id].x, players[id].y)
-	
-	--print(id)
 end
 
 
