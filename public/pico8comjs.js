@@ -1,9 +1,12 @@
+'use strict';
+
 var pico8_gpio = Array(128);
 
 // Connection
 
 var HOST = location.origin.replace(/^http/, 'ws');
 var connection = new WebSocket(HOST);
+var el = document.getElementById('server-time');
 
 connection.onopen = function() 
 {
@@ -21,6 +24,8 @@ connection.onmessage = function(event)
 	console.log('Server message ' + data + ' received');
 
 	processInput(data);
+	
+	el.innerHTML = 'Server message: ' + event.data;
 };
 
 // Output

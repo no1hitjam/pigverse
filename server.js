@@ -1,29 +1,33 @@
 'use strict';
 
-const ws = require('ws');
-const server = new ws.Server({port: 8080});
- 
-server.on('connection', (connection) => 
-{
-	console.log('Client connected');
-	connection.send('test');
-	connection.on('message', (data) =>
-	{
-		console.log('Client message ' + data + ' received');
-		broadcast(data);
-  	}); 
-  	connection.on('close', (data) =>
-	{
-		console.log('Client disconnected');
-  	}); 
+const express = require('express');
+const SocketServer = require('ws').Server;
+const path = require('path');
+
+const PORT = process.env.PORT || 3000;
+const INDEX = path.join(__dirname, 'index.js');
+
+
+const server = express()
+  .use(express.static(path.join(__dirname, '/public')))
+  .listen(PORT, () => console.log(`Listening on ${ PORT }`));
+
+const wss = new SocketServer({ server });
+
+wss.on('connection', (ws) => {
+  console.log('Client connected');
+  ws.on('message', (data) =>
+  {
+    console.log('Client message ' + data + ' received');
+    broadcast(data);
+  }); 
+  ws.on('close', () => console.log('Client disconnected'));
 });
 
 function broadcast(data)
 {
-	server.clients.forEach((client) =>
+	wss.clients.forEach((client) =>
 	{
     	client.send(data);
   	});
 }
-
-console.log('Listening for connections');

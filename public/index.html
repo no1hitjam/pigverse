@@ -1,4 +1,4 @@
-﻿<html>
+<html>
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -51,9 +51,8 @@ canvas{
 </STYLE>
     
 </head>
-
-<body bgcolor=#303030>
-
+  <body bgcolor=#303030>
+    <p id='server-time'>test</p>
 	<br><br><br>
 
 	<center><div style="width:512px;">
@@ -83,20 +82,10 @@ canvas{
 			var pico8_gpio = new Array(128);
 		*/
 	</script>
-
-	<script>
-	  var HOST = location.origin.replace(/^http/, 'ws')
-      var ws = new WebSocket(HOST);
-      var el = document.getElementById('server-time');
-
-      ws.onmessage = function (event) {
-        el.innerHTML = 'Server time: ' + event.data;
-      };
-	</script>
-	
+    
 	<script async type="text/javascript" src="pico8comjs.js"></script> <!-- Add to your html container. -->
 	<script async type="text/javascript" src="index.js"></script>
-	  
+	
 	<script>
 		// key blocker. prevent cursor keys from scrolling page while playing cart.
 		
@@ -146,7 +135,5 @@ canvas{
 
 	</div></center>
 	<br><br>
-
-</body></html>
-
-
+  </body>
+</html>
