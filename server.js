@@ -5,8 +5,6 @@ const SocketServer = require('ws').Server;
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
-const INDEX = path.join(__dirname, 'index.js');
-
 
 const server = express()
   .use(express.static(path.join(__dirname, '/public')))
