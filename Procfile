@@ -1,2 +1,2 @@
-web: pigverse.html
+web: index.php
 server: npm start
