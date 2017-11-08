@@ -84,6 +84,16 @@ canvas{
 		*/
 	</script>
 
+	<script>
+	  var HOST = location.origin.replace(/^http/, 'ws')
+      var ws = new WebSocket(HOST);
+      var el = document.getElementById('server-time');
+
+      ws.onmessage = function (event) {
+        el.innerHTML = 'Server time: ' + event.data;
+      };
+	</script>
+	
 	<script async type="text/javascript" src="pico8comjs.js"></script> <!-- Add to your html container. -->
 	<script async type="text/javascript" src="index.js"></script>
 	  

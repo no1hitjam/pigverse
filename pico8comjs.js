@@ -3,12 +3,7 @@ var pico8_gpio = Array(128);
 // Connection
 
 var HOST = location.origin.replace(/^http/, 'ws');
-var connection;
-//if (window.location.origin === 'https://pigverse.herokuapp.com') {
-connection = new WebSocket(HOST);
-/*} else {
-  connection = new WebSocket('ws://127.0.0.1:3000');
-}*/
+var connection = new WebSocket(HOST);
 
 connection.onopen = function() 
 {
