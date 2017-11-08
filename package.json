@@ -1,14 +1,17 @@
 {
-  "name": "pico8comserver",
+  "name": "pigverse",
   "version": "1.0.0",
-  "description": "pico8com server",
+  "description": "pigverse server and client",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "pico8com",
+  "author": "Jackson Lango, pico8com",
   "license": "ISC",
   "dependencies": {
+    "bufferutil": "1.2.1",
+    "express": "4.13.4",
+    "utf-8-validate": "1.2.1",
     "ws": "^1.1.1"
   }
 }
