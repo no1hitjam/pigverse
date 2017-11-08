@@ -2,12 +2,15 @@ var pico8_gpio = Array(128);
 
 // Connection
 
-var connection;
+/*var connection;
 if (window.location.origin === 'https://no1hitjam.github.io') {
   connection = new WebSocket('wss://pigverse-server.herokuapp.com/');
 } else {
   connection = new WebSocket('ws://127.0.0.1:8080');
-}
+}*/
+
+var HOST = location.origin.replace(/^http/, 'ws')
+var connection = new WebSocket(HOST);
 
 connection.onopen = function() 
 {
