@@ -186,6 +186,17 @@ end
 
 walkable_tiles = { 16, 18, 20, 22, 24, 36, 37, 44 }
 
+function is_blocked(x, y)
+	blocking_character = false
+	for id, character in pairs(characters) do
+		if character.x == x and character.y == y then
+			return true
+		end
+	end
+	
+	return not contains(walkable_tiles, mget(x, y))
+end
+
 function move(id, dir)
 	new_x = characters[id].x
 	new_y = characters[id].y
@@ -206,14 +217,7 @@ function move(id, dir)
 		characters[id].facing = 4;
 	end
 	
-	blocking_character = false
-	for id, character in pairs(characters) do
-		if character.x == new_x and character.y == new_y then
-			blocking_character = true
-		end
-	end
-	
-	if (not blocking_character and contains(walkable_tiles, mget(new_x, new_y))) then
+	if not is_blocked(new_x, new_y) then
 		characters[id].x = new_x
 		characters[id].y = new_y
 	end
@@ -222,6 +226,10 @@ end
 function process_input()
 	--print(imsg)
 	id_arg = msg_arg(imsg, 1)
+	if (id_arg == your_id) then
+		return
+	end
+	
 	arg1 = msg_arg(imsg, 2)
 	arg2 = msg_arg(imsg, 3)
 	arg3 = msg_arg(imsg, 4)
@@ -319,9 +327,13 @@ function _update()
 	
 	for monster_id in all(monster_ids) do
 		character = characters[monster_id]
-		if character.health <= 0 or not contains(walkable_tiles, mget(character.x, character.y)) then
-			spawn_character(monster_id, random_int() % 30 + 3, random_int() % 15 + 2)
-			send_character(monster_id)
+		if character.health <= 0 then
+			spawn_x = random_int() % 30 + 3
+			spawn_y = random_int() % 15 + 2
+			if not is_blocked(spawn_x, spawn_y) then
+				spawn_character(monster_id, spawn_x, spawn_y)
+				send_character(monster_id)
+			end
 		end
 	end
 	
