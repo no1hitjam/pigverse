@@ -320,6 +320,7 @@ function _update()
 		
 		if character.health <= 0 or not contains(walkable_tiles, mget(character.x, character.y)) then
 			spawn_character(id, random_int(20) + 3, random_int(10 + 2))
+			send_character(id)
 		end
 	end
 	
