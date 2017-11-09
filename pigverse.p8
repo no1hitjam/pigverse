@@ -246,20 +246,16 @@ end
 
 -- init game
 
-function _init()
-	your_id = new_player_id()
-	spawn_character(your_id, (random_int() % 5) + 15, (random_int() % 10) + 5)
-	send_character(your_id)
-	
-	
-	monster0id = your_id.."-blob-0"
-	spawn_character(monster0id, (random_int() % 5) + 15, (random_int() % 10) + 5)
-	send_character(monster0id)
-	monster1id = your_id.."-blob-1"
-	spawn_character(monster1id, (random_int() % 5) + 15, (random_int() % 10) + 5)
-	send_character(monster1id)
-end
+your_id = new_player_id()
+spawn_character(your_id, (random_int() % 5) + 15, (random_int() % 10) + 5)
+send_character(your_id)
 
+monster_ids = { your_id.."-blob-0", your_id.."-blob-1"}
+
+for monster_id in all(monster_ids) do
+	spawn_character(monster_id, (random_int() % 5) + 15, (random_int() % 10) + 5)
+	send_character(monster_id)
+end
 
 
 -- update game
@@ -287,6 +283,7 @@ function check_btns()
 	end 
 end
 
+
 function check_attack(character)
 	if character.attack == ATTACK_TIME - 5 then
 		-- chop weeds
@@ -300,27 +297,31 @@ function check_attack(character)
 		for id, hit_character in pairs(characters) do
 			sprite_type = split_str(id, "-")[2]
 			if hit_character.x == sword_pos_x and hit_character.y == sword_pos_y and sprite_type != nil then
-				hit_character.health -= .5
+				hit_character.health -= 1
 				send_character(id)
 			end
 		end
 	end
 end
- 
+
+
 function _update()	
 	check_btns()
 	
-	for id, character in pairs(characters) do
-		check_attack(character)
+	check_attack(characters[your_id])
 	
+	for id, character in pairs(characters) do
 		-- end of update
 		if character.attack > 0 then
 			character.attack -= 1
 		end
-		
+	end
+	
+	for monster_id in all(monster_ids) do
+		character = characters[monster_id]
 		if character.health <= 0 or not contains(walkable_tiles, mget(character.x, character.y)) then
-			spawn_character(id, random_int(20) + 3, random_int(10 + 2))
-			send_character(id)
+			spawn_character(monster_id, random_int() % 20 + 3, random_int() % 10 + 2)
+			send_character(monster_id)
 		end
 	end
 	
