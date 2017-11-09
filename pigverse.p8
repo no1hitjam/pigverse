@@ -320,7 +320,7 @@ function _update()
 	for monster_id in all(monster_ids) do
 		character = characters[monster_id]
 		if character.health <= 0 or not contains(walkable_tiles, mget(character.x, character.y)) then
-			spawn_character(monster_id, random_int() % 20 + 3, random_int() % 10 + 2)
+			spawn_character(monster_id, random_int() % 30 + 3, random_int() % 15 + 2)
 			send_character(monster_id)
 		end
 	end
