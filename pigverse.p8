@@ -131,7 +131,7 @@ end
 
 -- CONSTANTS
 
-SWORD_TIME = 20
+ATTACK_TIME = 12
 sword_x = { -1, 1, 0, 0 }
 sword_y = { 0, 0, -1, 1 }
 
@@ -141,7 +141,7 @@ sword_y = { 0, 0, -1, 1 }
 
 -- PLAYERS
 
-players = {}
+characters = {}
 
 id_letters = "abcdefghijklmnopqrstuvwxyz"
 
@@ -152,23 +152,23 @@ end
 
 function new_player_id()
 	new_id = get_id_letter()..get_id_letter()..get_id_letter()
-	if (players[new_id] == nil) then
+	if (characters[new_id] == nil) then
 		return new_id
 	end
 	return new_player_id()
 end
 
-function spawn_player(id, x, y)
-	print(id.." joined game")
-	players[id] = {}
-	players[id].facing = 1;
-	players[id].x = x
-	players[id].y = y
-	players[id].sword = 0
+function spawn_character(id, x, y)
+	characters[id] = {}
+	characters[id].facing = 1
+	characters[id].x = x
+	characters[id].y = y
+	characters[id].attack = 0
+	characters[id].health = 1
 end
 
-function send_character()
-	send_msg(your_id..'_character_'..players[your_id].x..'_'..players[your_id].y..'_'..players[your_id].facing)
+function send_character(id)
+	send_msg(id..'_character_'..characters[id].x..'_'..characters[id].y..'_'..characters[id].facing..'_'..characters[id].attack..'_'..characters[id].health)
 end
 
 -- /PLAYERS
@@ -179,28 +179,35 @@ end
 walkable_tiles = { 16, 18, 20, 22, 24, 36, 37, 44 }
 
 function move(id, dir)
-	new_x = players[id].x
-	new_y = players[id].y
+	new_x = characters[id].x
+	new_y = characters[id].y
 	if (dir == "left") then
 		new_x -= 1
-		players[id].facing = 1;
+		characters[id].facing = 1;
 	end
 	if (dir == "right") then
 		new_x += 1
-		players[id].facing = 2;
+		characters[id].facing = 2;
 	end
 	if (dir == "up") then
 		new_y -= 1
-		players[id].facing = 3;
+		characters[id].facing = 3;
 	end
 	if (dir == "down") then
 		new_y += 1
-		players[id].facing = 4;
+		characters[id].facing = 4;
 	end
 	
-	if (contains(walkable_tiles, mget(new_x, new_y))) then
-		players[id].x = new_x
-		players[id].y = new_y
+	blocking_character = false
+	for id, character in pairs(characters) do
+		if character.x == new_x and character.y == new_y then
+			blocking_character = true
+		end
+	end
+	
+	if (not blocking_character and contains(walkable_tiles, mget(new_x, new_y))) then
+		characters[id].x = new_x
+		characters[id].y = new_y
 	end
 end
  
@@ -211,23 +218,36 @@ function process_input()
 	arg2 = msg_arg(imsg, 3)
 	arg3 = msg_arg(imsg, 4)
 	arg4 = msg_arg(imsg, 5)
+	arg5 = msg_arg(imsg, 6)
+	arg6 = msg_arg(imsg, 7)
 	
 	if (arg1 == "character") then
-		if (players[id_arg] == nil) then
-			spawn_player(id_arg, arg2, arg3)
-			send_character()
+		if (characters[id_arg] == nil) then
+			spawn_character(id_arg, arg2, arg3)
+			send_character(your_id)
 		end
-		players[id_arg].x = arg2
-		players[id_arg].y = arg3
-		players[id_arg].facing = arg3
-		check_sword(id_arg)
+		characters[id_arg].x = arg2
+		characters[id_arg].y = arg3
+		characters[id_arg].facing = arg4
+		characters[id_arg].attack = arg5
+		characters[id_arg].health = arg6
+		
+		check_attack(characters, id_arg)
 	end
 end
 
 -- init game
-your_id = new_player_id()
-spawn_player(your_id, (random_int() % 5) + 15, (random_int() % 10) + 5)
-send_character()
+
+function _init()
+	your_id = new_player_id()
+	spawn_character(your_id, (random_int() % 5) + 15, (random_int() % 10) + 5)
+	send_character(your_id)
+	
+	monster0id = your_id.."-blob-0"
+	spawn_character(monster0id, (random_int() % 5) + 15, (random_int() % 10) + 5)
+	send_character(monster0id)
+end
+
 
 
 -- update game
@@ -235,45 +255,56 @@ send_character()
 function check_btns()
 	if (btnp(0)) then 
 		move(your_id, "left")
-		send_character()
+		send_character(your_id)
 	end
 	if (btnp(1)) then 
 		move(your_id, "right")
-		send_character()
+		send_character(your_id)
 	end 	
 	if (btnp(2)) then 
 		move(your_id, "up")
-		send_character()
+		send_character(your_id)
 	end
 	if (btnp(3)) then 
 		move(your_id, "down")
-		send_character()
+		send_character(your_id)
 	end 
-	if (btnp(4) and players[your_id].sword <= 0) then 
-		players[your_id].sword = SWORD_TIME
-		check_sword(your_id)
-		send_character()
+	if (btnp(4) and characters[your_id].attack <= 0) then 
+		characters[your_id].attack = ATTACK_TIME
+		send_character(your_id)
 	end 
 end
 
-function check_sword(id)
-	if (players[id].sword > 0) then
+function check_attack(character)
+	if character.attack == ATTACK_TIME then
 		-- chop weeds
-		sword_pos_x = players[id].x + sword_x[players[id].facing]
-		sword_pos_y	= players[id].y + sword_y[players[id].facing]
+		sword_pos_x = character.x + sword_x[character.facing]
+		sword_pos_y	= character.y + sword_y[character.facing]
 		if mget(sword_pos_x, sword_pos_y) == 38 then
 			mset(sword_pos_x, sword_pos_y, 16)
+		end
+		
+		-- attack monster
+		for id, hit_character in pairs(characters) do
+			sprite_type = split_str(id, "-")[2]
+			if hit_character.x == sword_pos_x and hit_character.y == sword_pos_y and sprite_type != nil then
+				hit_character.health -= .5
+				send_character(id)
+			end
 		end
 	end
 end
  
-function _update60()	
+function _update()	
 	check_btns()
 	
+	for id, character in pairs(characters) do
+		check_attack(character)
 	
-	-- end of update
-	if (players[your_id].sword > 0) then
-		players[your_id].sword -= 1
+		-- end of update
+		if character.attack > 0 then
+			character.attack -= 1
+		end
 	end
 	
 	-- check server messages
@@ -285,25 +316,46 @@ end
 
 -- start draw 
  
+character_sprite = { blob=64 }
+function draw_character(id, character)
+	if character.health <= 0 then
+		return
+	end
 
-function draw_player(player)
-	x = (player.x - players[your_id].x + stage_size / 2) * tile_size
-	y = (player.y - players[your_id].y + stage_size / 2) * tile_size
-	spr(player.facing, x, y)
-	if (player.sword > 0) then
-		spr(111 + player.facing, x + sword_x[player.facing] * tile_size, y + sword_y[player.facing] * tile_size)
+	x = (character.x - characters[your_id].x + stage_size / 2) * tile_size
+	y = (character.y - characters[your_id].y + stage_size / 2) * tile_size
+	
+	
+	sprite_num = character.facing
+	sprite_type = split_str(id, "-")[2]
+	if sprite_type != nil and character_sprite[sprite_type] != nil then
+		sprite_num = character_sprite[sprite_type]
+	end
+	
+	spr(sprite_num, x, y)
+end
+
+function draw_attack(character)
+	x = (character.x - characters[your_id].x + stage_size / 2) * tile_size
+	y = (character.y - characters[your_id].y + stage_size / 2) * tile_size
+	if (character.attack > 0) then
+		spr(111 + character.facing, x + sword_x[character.facing] * tile_size, y + sword_y[character.facing] * tile_size)
 	end
 end
  
 function _draw()
 	cls()
-	map(players[your_id].x - stage_size / 2, players[your_id].y - stage_size / 2)
-	--map(2, 2)
-	foreach(players, draw_player)
-	for k,v in pairs(players) do
-		draw_player(v)
+	
+	map(characters[your_id].x - stage_size / 2, characters[your_id].y - stage_size / 2)
+	
+	for id, character in pairs(characters) do
+		draw_character(id, character)
 	end
-	print(players[your_id].x..', '..players[your_id].y)
+	for id, character in pairs(characters) do
+		draw_attack(character)
+	end
+	
+	print(characters[your_id].x..', '..characters[your_id].y)
 end
 
 
