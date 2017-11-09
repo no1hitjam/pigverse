@@ -151,13 +151,13 @@ end
 function spawn_player(id, x, y)
 	print(id.." joined game")
 	players[id] = {}
-	players[id].flip = false;
+	players[id].facing = 0;
 	players[id].x = x
 	players[id].y = y
 end
 
-function send_move()
-	send_msg(your_id..'_move_'..players[your_id].x..'_'..players[your_id].y)
+function send_character()
+	send_msg(your_id..'_character_'..players[your_id].x..'_'..players[your_id].y..'_'..players[your_id].facing)
 end
 
 -- end players
@@ -172,21 +172,22 @@ function move(id, dir)
 	new_y = players[id].y
 	if (dir == "left") then
 		new_x -= 1
-		players[id].flip = false;
+		players[id].facing = 0;
 	end
 	if (dir == "right") then
 		new_x += 1
-		players[id].flip = true;
+		players[id].facing = 1;
 	end
 	if (dir == "up") then
 		new_y -= 1
+		players[id].facing = 2;
 	end
 	if (dir == "down") then
 		new_y += 1
+		players[id].facing = 3;
 	end
 	
 	if (contains(walkable_tiles, mget(new_x, new_y))) then
-		
 		players[id].x = new_x
 		players[id].y = new_y
 	end
@@ -198,40 +199,42 @@ function process_input()
 	arg1 = msg_arg(imsg, 2)
 	arg2 = msg_arg(imsg, 3)
 	arg3 = msg_arg(imsg, 4)
+	arg4 = msg_arg(imsg, 5)
 	
-	if (arg1 == "move") then
+	if (arg1 == "character") then
 		if (players[id_arg] == nil) then
 			spawn_player(id_arg, arg2, arg3)
-			send_move()
+			send_character()
 		end
 		players[id_arg].x = arg2
 		players[id_arg].y = arg3
+		players[id_arg].facing = arg3
 	end
 end
 
 -- init game
 your_id = new_player_id()
 spawn_player(your_id, (random_int() % 5) + 15, (random_int() % 10) + 5)
-send_move()
+send_character()
 
  
 function _update60()	
 	
 	if (btnp(0)) then 
 		move(your_id, "left")
-		send_move()
+		send_character()
 	end
 	if (btnp(1)) then 
 		move(your_id, "right")
-		send_move()
+		send_character()
 	end 	
 	if (btnp(2)) then 
 		move(your_id, "up")
-		send_move()
+		send_character()
 	end
 	if (btnp(3)) then 
 		move(your_id, "down")
-		send_move()
+		send_character()
 	end 
 	
 	--call on update
@@ -246,7 +249,7 @@ end
 function draw_player(player)
 	x = (player.x - players[your_id].x + stage_size / 2) * tile_size
 	y = (player.y - players[your_id].y + stage_size / 2) * tile_size
-	spr(1, x, y, 1, 1, player.flip, false)
+	spr(1 + player.facing, x, y)
 end
  
 function _draw()
@@ -265,13 +268,13 @@ end
 
 
 __gfx__
-00000000011111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-000000007ee7e2210000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-007007001ee1e2210000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000ffffe2210000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000ffffe2210000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-007007001eeee2210000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000011111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000011111100111111001ffff10011111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+000000007ee7e221122e7ee712222221122222210000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+007007001ee1e221122e1ee11eeeeee11eeeeee10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000ffffe221122effff1eeeeee11e7ee7e10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000ffffe221122effff1eeeeee11e1ee1e10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+007007001eeee221122eeee11eeeeee11effffe10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000001111110011111100111111001ffff100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 333333332ccccccceeeccccccccccccecccccc6622333333d3333333333333dd33333332ccccc111111ccccc3d555333cccccccccccccccccccccccc00000000
 333333332ccccccc333eeccccccccccecccc663311dd3333d33333333333dd1133333332ccccccccccccccccd5555533cccccccccbcbbcccccbbcccc00000000
