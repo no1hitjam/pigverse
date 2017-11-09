@@ -234,11 +234,11 @@ function process_input()
 			spawn_character(id_arg, arg2, arg3)
 			send_character(your_id)
 		end
-		characters[id_arg].x = tonum(arg2)
-		characters[id_arg].y = tonum(arg3)
-		characters[id_arg].facing = tonum(arg4)
-		characters[id_arg].attack = tonum(arg5)
-		characters[id_arg].health = tonum(arg6)
+		characters[id_arg].x = tonumber(arg2)
+		characters[id_arg].y = tonumber(arg3)
+		characters[id_arg].facing = tonumber(arg4)
+		characters[id_arg].attack = tonumber(arg5)
+		characters[id_arg].health = tonumber(arg6)
 		
 		check_attack(characters, id_arg)
 	end
