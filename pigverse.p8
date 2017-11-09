@@ -107,6 +107,13 @@ function random_int()
 	return flr(rnd(500))
 end
 
+function contains(tbl, val)
+	for v in all(tbl) do
+		if (v == val) return true
+	end
+	return false
+end
+
 function msg_arg(msg, idx)
 	if (msg == nil) return nil
 	
@@ -158,20 +165,30 @@ end
 
 -- start game
 
+walkable_tiles = { 16, 18, 20, 22, 24, 36, 37, 44 }
+
 function move(id, dir)
+	new_x = players[id].x
+	new_y = players[id].y
 	if (dir == "left") then
-		players[id].x -= tile_size
+		new_x -= 1
 		players[id].flip = false;
 	end
 	if (dir == "right") then
-		players[id].x += tile_size
+		new_x += 1
 		players[id].flip = true;
 	end
 	if (dir == "up") then
-		players[id].y -= tile_size
+		new_y -= 1
 	end
 	if (dir == "down") then
-		players[id].y += tile_size
+		new_y += 1
+	end
+	
+	if (contains(walkable_tiles, mget(new_x, new_y))) then
+		
+		players[id].x = new_x
+		players[id].y = new_y
 	end
 end
  
@@ -194,7 +211,7 @@ end
 
 -- init game
 your_id = new_player_id()
-spawn_player(your_id, (random_int() % 10) * tile_size, (random_int() % 10) * tile_size)
+spawn_player(your_id, (random_int() % 5) + 15, (random_int() % 10) + 5)
 send_move()
 
  
@@ -227,19 +244,20 @@ end
 -- start draw 
  
 function draw_player(player)
-	x = player.x - players[your_id].x + stage_size / 2 * tile_size
-	y = player.y - players[your_id].y + stage_size / 2 * tile_size
+	x = (player.x - players[your_id].x + stage_size / 2) * tile_size
+	y = (player.y - players[your_id].y + stage_size / 2) * tile_size
 	spr(1, x, y, 1, 1, player.flip, false)
 end
  
 function _draw()
 	cls()
-	map(players[your_id].x / tile_size, players[your_id].y / tile_size)
+	map(players[your_id].x - stage_size / 2, players[your_id].y - stage_size / 2)
 	--map(2, 2)
 	foreach(players, draw_player)
 	for k,v in pairs(players) do
 		draw_player(v)
 	end
+	print(players[your_id].x..', '..players[your_id].y)
 end
 
 
