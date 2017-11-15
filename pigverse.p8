@@ -7,7 +7,7 @@ __lua__
 -- constants
 
 tile_size = 8
-stage_size = 12
+stage_size = 16
 
 
 -- api
@@ -163,6 +163,8 @@ function spawn_character(id, x, y)
 	characters[id].facing = 1
 	characters[id].x = x
 	characters[id].y = y
+	characters[id].world_x = x * tile_size
+	characters[id].world_y = y * tile_size
 	characters[id].attack = 0
 	characters[id].health = 4
 	characters[id].hurt_timer = 0
@@ -346,15 +348,24 @@ end
 -- start draw 
  
 character_sprite = { blob=64 }
-function draw_character(id, character)
+function draw_character(id, character, camera_x, camera_y)
 	if character.health <= 0 then
 		return
 	end
 
-	x = (character.x - characters[your_id].x + stage_size / 2) * tile_size
-	y = (character.y - characters[your_id].y + stage_size / 2) * tile_size
+	-- calculate position
+	character.world_x += (character.x * tile_size - character.world_x) * .1
+	character.world_y += (character.y * tile_size - character.world_y) * .1
 	
+	-- for going 16x16 screen by screen
+	screen_x = character.world_x - camera_x * stage_size * tile_size
+	screen_y = character.world_y - camera_y * stage_size * tile_size
 	
+	-- for following every move
+	--screen_x = character.world_x - (characters[your_id].x - stage_size / 2) * tile_size
+	--screen_y = character.world_y - (characters[your_id].y - stage_size / 2) * tile_size
+	
+	-- find sprite
 	sprite_num = character.facing
 	sprite_type = split_str(id, "-")[2]
 	if sprite_type != nil and character_sprite[sprite_type] != nil then
@@ -364,10 +375,11 @@ function draw_character(id, character)
 		end
 	end
 	
-	spr(sprite_num, x, y)
+	-- draw sprite
+	spr(sprite_num, screen_x, screen_y)
 end
 
-function draw_attack(character)
+function draw_attack(character, camera_x, camera_y)
 	x = (character.x - characters[your_id].x + stage_size / 2) * tile_size
 	y = (character.y - characters[your_id].y + stage_size / 2) * tile_size
 	if (character.attack > 0) then
@@ -378,13 +390,16 @@ end
 function _draw()
 	cls()
 	
-	map(characters[your_id].x - stage_size / 2, characters[your_id].y - stage_size / 2)
+	camera_x = flr(characters[your_id].x / stage_size)
+	camera_y = flr(characters[your_id].y / stage_size)
+	
+	map(camera_x * stage_size, camera_y * stage_size)
 	
 	for id, character in pairs(characters) do
-		draw_character(id, character)
+		draw_character(id, character, camera_x, camera_y)
 	end
 	for id, character in pairs(characters) do
-		draw_attack(character)
+		draw_attack(character, camera_x, camera_y)
 	end
 	
 	print(characters[your_id].x..', '..characters[your_id].y)
