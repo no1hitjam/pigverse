@@ -7,6 +7,7 @@
 	<meta name="description" content="">
 	<link rel="stylesheet" href="pico.css">
 	<link rel="stylesheet" href="index.css">
+	<meta name="viewport" content="width=device-width,user-scalable=no">
 
 </head>
 
@@ -82,27 +83,27 @@
 	<script type="text/javascript">
 		function pressJoyButton(buttonIndex) {
 			var newButtons = pico8_buttons[0] | 1 << buttonIndex;
-			console.log("press: " + newButtons);
 			pico8_buttons[0] = newButtons;
 		}
 
 		function releaseJoyButton(buttonIndex) {
 			var newButtons = pico8_buttons[0] & (31 ^ 1 << buttonIndex);
-			console.log("release: " + newButtons);
 			pico8_buttons[0] = newButtons;
 		}
-		document.getElementById("controllerLeft").addEventListener("mousedown", () => pressJoyButton(0));
-		document.getElementById("controllerLeft").addEventListener("mouseup", () => releaseJoyButton(0));
-		document.getElementById("controllerRight").addEventListener("mousedown", () => pressJoyButton(1));
-		document.getElementById("controllerRight").addEventListener("mouseup", () => releaseJoyButton(1));
-		document.getElementById("controllerUp").addEventListener("mousedown", () => pressJoyButton(2));
-		document.getElementById("controllerUp").addEventListener("mouseup", () => releaseJoyButton(2));
-		document.getElementById("controllerDown").addEventListener("mousedown", () => pressJoyButton(3));
-		document.getElementById("controllerDown").addEventListener("mouseup", () => releaseJoyButton(3));
-		document.getElementById("controllerZ").addEventListener("mousedown", () => pressJoyButton(4));
-		document.getElementById("controllerZ").addEventListener("mouseup", () => releaseJoyButton(4));
-		document.getElementById("controllerX").addEventListener("mousedown", () => pressJoyButton(5));
-		document.getElementById("controllerX").addEventListener("mouseup", () => releaseJoyButton(5));
+
+		function addButtonListeners(buttonName, buttonIndex) {
+			document.getElementById(buttonName).addEventListener("touchstart", () => pressJoyButton(buttonIndex));
+			document.getElementById(buttonName).addEventListener("touchend", () => releaseJoyButton(buttonIndex));
+			document.getElementById(buttonName).addEventListener("mousedown", () => pressJoyButton(buttonIndex));
+			document.getElementById(buttonName).addEventListener("mouseup", () => releaseJoyButton(buttonIndex));
+		}
+		addButtonListeners("controllerLeft", 0);
+		addButtonListeners("controllerRight", 1);
+		addButtonListeners("controllerUp", 2);
+		addButtonListeners("controllerDown", 3);
+		addButtonListeners("controllerZ", 4);
+		addButtonListeners("controllerX", 5);		
+		
 	</script>
 
 	<br><br>
