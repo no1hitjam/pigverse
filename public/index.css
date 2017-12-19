@@ -1,0 +1,70 @@
+body {
+  background-color: black;
+}
+
+.canvasContainer {
+  width:512px;
+  margin: auto;
+}
+
+.controllerContainer {
+  max-width: 768px;
+  margin: auto;
+  margin-top: 64px;
+}
+
+.controllerDirButtons {
+  background-color: #111;
+  width: 45%;
+  max-width: 300px;
+  height: 256px;  
+  float: left;
+}
+
+.controllerActionButtons {
+  background-color: #111;
+  width: 45%;
+  max-width: 300px;
+  height: 256px;
+  float: right;
+}
+
+.controllerDir {
+  background-color: pink;
+  width: 33%;
+  height: 33%;
+  cursor: pointer;
+}
+
+#controllerUp {
+  margin: auto;
+}
+
+#controllerLeft {
+  display: inline-block;
+}
+
+#controllerRight {
+  float: right;
+}
+
+#controllerDown {
+  margin: auto;
+}
+
+.controllerAction {
+  background-color: teal;
+  width: 50%;
+  height: 50%;
+  cursor: pointer;
+}
+
+#controllerZ {
+  float: left;
+  margin-top: 40%;
+}
+
+#controllerX {
+  float: right;
+  margin-top: 10%;
+}

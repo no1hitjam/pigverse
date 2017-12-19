@@ -1,140 +1,110 @@
 ﻿<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>PICO-8 Cartridge</title>
-        <meta name="description" content="">
+<head>
 
-<STYLE TYPE="text/css">
-<!--
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>PIGVERSE</title>
+	<meta name="description" content="">
+	<link rel="stylesheet" href="pico.css">
+	<link rel="stylesheet" href="index.css">
 
-canvas#canvas { width: 512px; height: 512px; }
-
-.pico8_el {
-	float:left;
-	width:92px;
-	display:inline-block; 
-  	margin: 1px;
-	padding: 4px;
-	text-align: center;
-	color:#fff;
-	background-color:#777;
-	font-family : verdana;
-	font-size: 9pt;
-	cursor: pointer;
-	cursor: hand;
-}
-.pico8_el a{
-	text-decoration: none;
-	color:#fff;
-}
-
-.pico8_el:hover{
-	background-color:#aaa;
-}
-
-.pico8_el:link{
-	background-color:#aaa;
-}
-
-canvas{
-    image-rendering: optimizeSpeed;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: optimize-contrast;
-    image-rendering: pixelated;
-    -ms-interpolation-mode: nearest-neighbor;
-    border: 0px
-}
-
--->
-</STYLE>
-    
 </head>
 
-<body bgcolor=#303030>
+<body>
 
 	<br><br><br>
 
-	<center><div style="width:512px;">
+	<div class="content">
 
-	<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+		<div class="canvasContainer">
 
-	<script type="text/javascript">
-		var canvas = document.getElementById("canvas");
-		canvas.width = window.innerWidth;
-		canvas.height = window.innerHeight;
+			<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
 
-		// show Emscripten environment where the canvas is
-		// arguments are passed to PICO-8
-		
-		var Module = {};
-		Module.canvas = canvas;
-		
-		/*
-			// When pico8_buttons is defined, PICO-8 takes each int to be a live bitfield
-			// representing the state of each player's buttons
+			<script type="text/javascript">
+				var canvas = document.getElementById("canvas");
+				canvas.width = window.innerWidth;
+				canvas.height = window.innerHeight;
+
+				// show Emscripten environment where the canvas is
+				// arguments are passed to PICO-8
+				
+				var Module = {};
+				Module.canvas = canvas;
 			
-			var pico8_buttons = [0, 0, 0, 0, 0, 0, 0, 0]; // max 8 players
-			pico8_buttons[0] = 2 | 16; // example: player 0, RIGHT and Z held down
-			
-			// when pico8_gpio is defined, reading and writing to gpio pins will
-			// read and write to these values
-			var pico8_gpio = new Array(128);
-		*/
-	</script>
+				// When pico8_buttons is defined, PICO-8 takes each int to be a live bitfield
+				// representing the state of each player's buttons
+				
+				var pico8_buttons = [0, 0, 0, 0, 0, 0, 0, 0]; // max 8 players
+				//pico8_buttons[0] = 2 | 16; // example: player 0, RIGHT and Z held down
+				
+				// when pico8_gpio is defined, reading and writing to gpio pins will
+				// read and write to these values
+				var pico8_gpio = new Array(128);
+				
+			</script>
 
-	<script async type="text/javascript" src="pico8comjs.js"></script> <!-- Add to your html container. -->
-	<script async type="text/javascript" src="index.js"></script>
-	  
-	<script>
-		// key blocker. prevent cursor keys from scrolling page while playing cart.
-		
-		function onKeyDown_blocker(event) {
-			event = event || window.event;
-			var o = document.activeElement;
-			if (!o || o == document.body || o.tagName == "canvas")
-			{
-				if ([32, 37, 38, 39, 40].indexOf(event.keyCode) > -1)
-				{
-					if (event.preventDefault) event.preventDefault();
+			<script async type="text/javascript" src="pico8comjs.js"></script> <!-- Add to your html container. -->
+			<script async type="text/javascript" src="index.js"></script>
+				
+			<script>
+				// key blocker. prevent cursor keys from scrolling page while playing cart.
+				
+				function onKeyDown_blocker(event) {
+					event = event || window.event;
+					var o = document.activeElement;
+					if (!o || o == document.body || o.tagName == "canvas")
+					{
+						if ([32, 37, 38, 39, 40].indexOf(event.keyCode) > -1)
+						{
+							if (event.preventDefault) event.preventDefault();
+						}
+					}
 				}
-			}
+
+				document.addEventListener('keydown', onKeyDown_blocker, false);
+
+			</script>
+		</div>
+
+		<div class="controllerContainer">
+			<div class="controllerDirButtons">
+				<div id="controllerUp" class="controllerDir"></div>
+				<div id="controllerLeft" class="controllerDir"></div>
+				<div id="controllerRight" class="controllerDir"></div>
+				<div id="controllerDown" class="controllerDir"></div>
+			</div>
+			<div class="controllerActionButtons">
+				<div id="controllerZ" class="controllerAction"></div>
+				<div id="controllerX" class="controllerAction"></div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		function pressJoyButton(buttonIndex) {
+			var newButtons = pico8_buttons[0] | 1 << buttonIndex;
+			console.log("press: " + newButtons);
+			pico8_buttons[0] = newButtons;
 		}
 
-		document.addEventListener('keydown', onKeyDown_blocker, false);
-
+		function releaseJoyButton(buttonIndex) {
+			var newButtons = pico8_buttons[0] & (31 ^ 1 << buttonIndex);
+			console.log("release: " + newButtons);
+			pico8_buttons[0] = newButtons;
+		}
+		document.getElementById("controllerLeft").addEventListener("mousedown", () => pressJoyButton(0));
+		document.getElementById("controllerLeft").addEventListener("mouseup", () => releaseJoyButton(0));
+		document.getElementById("controllerRight").addEventListener("mousedown", () => pressJoyButton(1));
+		document.getElementById("controllerRight").addEventListener("mouseup", () => releaseJoyButton(1));
+		document.getElementById("controllerUp").addEventListener("mousedown", () => pressJoyButton(2));
+		document.getElementById("controllerUp").addEventListener("mouseup", () => releaseJoyButton(2));
+		document.getElementById("controllerDown").addEventListener("mousedown", () => pressJoyButton(3));
+		document.getElementById("controllerDown").addEventListener("mouseup", () => releaseJoyButton(3));
+		document.getElementById("controllerZ").addEventListener("mousedown", () => pressJoyButton(4));
+		document.getElementById("controllerZ").addEventListener("mouseup", () => releaseJoyButton(4));
+		document.getElementById("controllerX").addEventListener("mousedown", () => pressJoyButton(5));
+		document.getElementById("controllerX").addEventListener("mouseup", () => releaseJoyButton(5));
 	</script>
-        
-	<br>
 
-	<div class=pico8_el onclick="Module.pico8Reset();">
-
-	<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAaklEQVR4Ae2dOwoAMQhE15A+rfc/3bZ7AlMnQfywCkKsfcgMM9ZP+QHtIn0vLeBAFduiFdQ/0DmvtR5LXJ6CPSXe2ZXcFNlTxFbemKrbZPs35XogeS9xeQr+anT6LzoOwEDwZJ7jwhXUnwkTTiDQ2Ja34AAAABB0RVh0TG9kZVBORwAyMDExMDIyMeNZtsEAAAAASUVORK5CYII=" alt="Reset" width=12 height=	12/>
-
-	Reset</div>
-
-	<div class=pico8_el onclick="Module.pico8TogglePaused();">
-
-	<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAPUlEQVR4Ae3doQ0AIAxEUWABLPtPh2WCq26DwFSU/JPNT166QSu/Hg86W9dwLte+diP7AwAAAAAAgD+A+jM2ZAgo84I0PgAAABB0RVh0TG9kZVBORwAyMDExMDIyMeNZtsEAAAAASUVORK5CYII=" alt="Pause" width=12 height=12/>
-
-	Pause</div>
-	<div class=pico8_el onclick="Module.requestFullScreen(true, false);">
-	<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAaklEQVR4Ae2dsQ1AIQhExfze1v2ns3UCrfgFhmgUUAoGgHscp21wX9BqaZoDojbB96OkDJKNcTN2BHTyYNYmoT2BlPL7BKgcPfHjAVXKKadkHOn9K1r16N0czN6a95N8mnA7Aq2fTZ3Af3UKmCSMazL8HwAAABB0RVh0TG9kZVBORwAyMDExMDIyMeNZtsEAAAAASUVORK5CYII=" alt="Fullscreen" width=12 height=12/>
-
-	Fullscreen</div>
-	<div class=pico8_el onclick="Module.pico8ToggleSound();">
-	<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAXklEQVR4Ae2doQ4AIQxD4YLH8v9fh+ULhjpxxSwLg2uyapr1JRu1iV5Z+1BGl4+xNpX38SYo2uRvYiT5LwEmt+ocgXVLrhPEgBiw8Q5w7/kueSkK+D2tJO4E/I3GrwkqQCBabEj/4QAAABB0RVh0TG9kZVBORwAyMDExMDIyMeNZtsEAAAAASUVORK5CYII=" alt="Toggle Sound" width=12 height=12/>
-	
-	Sound</div>
-	<div class=pico8_el ><a target="_new" href="http://www.lexaloffle.com/bbs/?cat=7&sub=2">
-	<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAlElEQVR4Ae2dMQ5FQBCGh6jcwAkkateg3DiAa+iQUGqVKi95FQfAJRQOoHeBUf8JyQqKjZ1uMzuz2e/LTE3KhyF7kSlgLOykas23f6D+A9Yp84aAOYU15pcJnfji0Il2ID8HzC4y38ZrnfIBGxeRoR3c3EWrACdsV5BOsx7OSRnrOXh4F5HzA6bevwUn8wlz7eCDsQM99B3ks0s/4QAAABB0RVh0TG9kZVBORwAyMDExMDIyMeNZtsEAAAAASUVORK5CYII=" alt="More Carts" width=12 height=12/>
-
-	Carts</a></div>
-
-	<br>	
-
-	</div></center>
 	<br><br>
 
 </body></html>
