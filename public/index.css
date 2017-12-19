@@ -1,5 +1,6 @@
 body {
   background-color: black;
+  font-family: sans-serif;
 }
 
 .canvasContainer {
@@ -35,20 +36,33 @@ body {
   right: 0;
 }
 
-#controllerDirButtons {
-  background-color: #111;
+#controllerJoyStick {
+  background-color: #222;
   width: 45%;
+  height: 100%;
   max-width: 300px;
   float: left;
-  height: 100%;
   cursor: pointer;
+  border-radius: 10%;
+}
+
+#controllerJoyStickKnob {
+  background-color: red;
+  width: 50%;
+  height: 50%;
+  position: relative;
+  top: 25%;
+  left: 25%;
+  border-radius: 50%;
 }
 
 #controllerActionButtons {
-  background-color: #111;
+  background-color: #222;
   width: 45%;
+  height: 100%;
   max-width: 300px;
   float: right;
+  border-radius: 10%;
 }
 
 .controllerDir {
@@ -79,6 +93,15 @@ body {
   width: 50%;
   height: 50%;
   cursor: pointer;
+  border-radius: 40%;
+  text-align: center;
+}
+
+.controllerAction p {
+  color: white;
+  margin-top: 25%;
+  font-size: 4.5vw;
+  font-weight: bold;
 }
 
 #controllerZ {

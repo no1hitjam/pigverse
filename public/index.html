@@ -71,15 +71,12 @@
 			<div id="controllerContainer">
 				<div id="controllerDummy"></div>
 				<div id="controllerElement">
-					<div id="controllerDirButtons">
-						<!--<div id="controllerUp" class="controllerDir"></div>
-						<div id="controllerLeft" class="controllerDir"></div>
-						<div id="controllerRight" class="controllerDir"></div>
-						<div id="controllerDown" class="controllerDir"></div>-->
+					<div id="controllerJoyStick">
+							<div id="controllerJoyStickKnob"></div>
 					</div>
 					<div id="controllerActionButtons">
-						<div id="controllerZ" class="controllerAction"></div>
-						<div id="controllerX" class="controllerAction"></div>
+						<div id="controllerZ" class="controllerAction"><p>Z</p></div>
+						<div id="controllerX" class="controllerAction"><p>X</p></div>
 					</div>
 				</div>
 			</div>
@@ -130,25 +127,33 @@
 				pico8_buttons[0] = pico8_buttons[0] & 48; // clear dir bits
 				var joyBits = 1 << joyStickValue(relX, relY);
 				pico8_buttons[0] = pico8_buttons[0] | joyBits; //set active bit
+
+				var cssX = Math.min(Math.max((relX + 1) * 25, 0), 50);
+				var cssY = Math.min(Math.max((relY + 1) * 25, 0), 50);
+				$("#controllerJoyStickKnob").css("top", cssY + "%");
+				$("#controllerJoyStickKnob").css("left", cssX + "%");
 			}
 		}
 
-		$("#controllerDirButtons").bind("mousedown touchstart", function(evt) {
+		$("#controllerJoyStick").bind("mousedown touchstart", function(evt) {
 			joyStickPressed = true;
 		});
 
-		$("#controllerDirButtons").bind("mousemove", function(evt) {
+		$("#controllerJoyStick").bind("mousemove", function(evt) {
 			joyStickMove(evt, $(this).parent().offset(), $(this).width(), $(this).height());
 		});
 
-		$("#controllerDirButtons").bind("touchmove", function(evt) {
+		$("#controllerJoyStick").bind("touchmove", function(evt) {
 			evt.preventDefault();
 			joyStickMove(evt.touches[0], $(this).parent().offset(), $(this).width(), $(this).height());
 		});
 
+		// TODO: Some way to release sword and still be able to move.
 		$(window).bind("mouseup touchend", function(evt) {
 			pico8_buttons[0] = pico8_buttons[0] & 0; // clear all bits
 			joyStickPressed = false;
+			$("#controllerJoyStickKnob").css("top", "25%");
+				$("#controllerJoyStickKnob").css("left", "25%");
 		});
 		
 	</script>

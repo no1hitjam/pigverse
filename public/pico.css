@@ -1,7 +1,6 @@
 canvas#canvas { width: 100%; height: auto; }
 
 .pico8_el {
-	float:left;
 	width:92px;
 	display:inline-block; 
   	margin: 1px;
