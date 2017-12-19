@@ -137,8 +137,13 @@
 			joyStickPressed = true;
 		});
 
-		$("#controllerDirButtons").bind("mousemove touchmove", function(evt) {
+		$("#controllerDirButtons").bind("mousemove", function(evt) {
 			joyStickMove(evt, $(this).parent().offset(), $(this).width(), $(this).height());
+		});
+
+		$("#controllerDirButtons").bind("touchmove", function(evt) {
+			evt.preventDefault();
+			joyStickMove(evt.touches[0], $(this).parent().offset(), $(this).width(), $(this).height());
 		});
 
 		$(window).bind("mouseup touchend", function(evt) {
