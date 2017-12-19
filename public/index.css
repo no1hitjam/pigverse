@@ -3,21 +3,41 @@ body {
 }
 
 .canvasContainer {
-  width:512px;
+  width: 100%;
+  max-width:512px;
   margin: auto;
 }
 
-.controllerContainer {
-  max-width: 768px;
+#controllerContainerContainer {
+  width: 100%;
+  max-width: 700px;
   margin: auto;
-  margin-top: 64px;
+}
+
+#controllerContainer {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  left: 0;
+  right: 0;
+}
+
+#controllerDummy {
+  margin-top: 40%;
+}
+
+#controllerElement {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .controllerDirButtons {
   background-color: #111;
   width: 45%;
   max-width: 300px;
-  height: 256px;  
   float: left;
 }
 
@@ -25,7 +45,6 @@ body {
   background-color: #111;
   width: 45%;
   max-width: 300px;
-  height: 256px;
   float: right;
 }
 
