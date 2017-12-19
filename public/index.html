@@ -99,7 +99,7 @@
 		}
 
 		function addButtonListeners(buttonName, buttonIndex) {
-			document.getElementById(buttonName).addEventListener("touchstart", (evt) => pressJoyButton(evt, buttonIndex));
+			document.getElementById(buttonName).addEventListener("touchmove", (evt) => pressJoyButton(evt, buttonIndex));
 			document.getElementById(buttonName).addEventListener("touchend", (evt) => releaseJoyButton(evt, buttonIndex));
 			document.getElementById(buttonName).addEventListener("mousedown", (evt) => pressJoyButton(evt, buttonIndex));
 			document.getElementById(buttonName).addEventListener("mouseup", (evt) => releaseJoyButton(evt, buttonIndex));
