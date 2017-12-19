@@ -67,7 +67,7 @@
 			</script>
 		</div>
 
-		<div id="controllerContainerContainer unselectable">
+		<div id="controllerContainerContainer">
 			<div id="controllerContainer">
 				<div id="controllerDummy"></div>
 				<div id="controllerElement">
@@ -86,21 +86,23 @@
 		</div>
 	</div>
 	<script type="text/javascript">
-		function pressJoyButton(buttonIndex) {
+		function pressJoyButton(evt, buttonIndex) {
+			evt.preventDefault();
 			var newButtons = pico8_buttons[0] | 1 << buttonIndex;
 			pico8_buttons[0] = newButtons;
 		}
 
-		function releaseJoyButton(buttonIndex) {
+		function releaseJoyButton(evt, buttonIndex) {
+			evt.preventDefault();
 			var newButtons = pico8_buttons[0] & (31 ^ 1 << buttonIndex);
 			pico8_buttons[0] = newButtons;
 		}
 
 		function addButtonListeners(buttonName, buttonIndex) {
-			document.getElementById(buttonName).addEventListener("touchstart", () => pressJoyButton(buttonIndex));
-			document.getElementById(buttonName).addEventListener("touchend", () => releaseJoyButton(buttonIndex));
-			document.getElementById(buttonName).addEventListener("mousedown", () => pressJoyButton(buttonIndex));
-			document.getElementById(buttonName).addEventListener("mouseup", () => releaseJoyButton(buttonIndex));
+			document.getElementById(buttonName).addEventListener("touchstart", (evt) => pressJoyButton(evt, buttonIndex));
+			document.getElementById(buttonName).addEventListener("touchend", (evt) => releaseJoyButton(evt, buttonIndex));
+			document.getElementById(buttonName).addEventListener("mousedown", (evt) => pressJoyButton(evt, buttonIndex));
+			document.getElementById(buttonName).addEventListener("mouseup", (evt) => releaseJoyButton(evt, buttonIndex));
 		}
 		addButtonListeners("controllerLeft", 0);
 		addButtonListeners("controllerRight", 1);
