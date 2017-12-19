@@ -35,14 +35,16 @@ body {
   right: 0;
 }
 
-.controllerDirButtons {
+#controllerDirButtons {
   background-color: #111;
   width: 45%;
   max-width: 300px;
   float: left;
+  height: 100%;
+  cursor: pointer;
 }
 
-.controllerActionButtons {
+#controllerActionButtons {
   background-color: #111;
   width: 45%;
   max-width: 300px;

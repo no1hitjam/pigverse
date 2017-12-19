@@ -71,13 +71,13 @@
 			<div id="controllerContainer">
 				<div id="controllerDummy"></div>
 				<div id="controllerElement">
-					<div class="controllerDirButtons">
-						<div id="controllerUp" class="controllerDir"></div>
+					<div id="controllerDirButtons">
+						<!--<div id="controllerUp" class="controllerDir"></div>
 						<div id="controllerLeft" class="controllerDir"></div>
 						<div id="controllerRight" class="controllerDir"></div>
-						<div id="controllerDown" class="controllerDir"></div>
+						<div id="controllerDown" class="controllerDir"></div>-->
 					</div>
-					<div class="controllerActionButtons">
+					<div id="controllerActionButtons">
 						<div id="controllerZ" class="controllerAction"></div>
 						<div id="controllerX" class="controllerAction"></div>
 					</div>
@@ -85,6 +85,7 @@
 			</div>
 		</div>
 	</div>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script type="text/javascript">
 		function pressJoyButton(evt, buttonIndex) {
 			evt.preventDefault();
@@ -94,22 +95,65 @@
 
 		function releaseJoyButton(evt, buttonIndex) {
 			evt.preventDefault();
-			var newButtons = pico8_buttons[0] & (31 ^ 1 << buttonIndex);
+			var newButtons = pico8_buttons[0] & (63 ^ 1 << buttonIndex);
 			pico8_buttons[0] = newButtons;
 		}
 
+		function moveJoyStick(evt) {
+			console.log(evt.clientX, evt.clientY);
+		}
+
 		function addButtonListeners(buttonName, buttonIndex) {
-			document.getElementById(buttonName).addEventListener("touchmove", (evt) => pressJoyButton(evt, buttonIndex));
+			document.getElementById(buttonName).addEventListener("touchstart", (evt) => pressJoyButton(evt, buttonIndex));
 			document.getElementById(buttonName).addEventListener("touchend", (evt) => releaseJoyButton(evt, buttonIndex));
 			document.getElementById(buttonName).addEventListener("mousedown", (evt) => pressJoyButton(evt, buttonIndex));
 			document.getElementById(buttonName).addEventListener("mouseup", (evt) => releaseJoyButton(evt, buttonIndex));
 		}
-		addButtonListeners("controllerLeft", 0);
+		/*addButtonListeners("controllerLeft", 0);
 		addButtonListeners("controllerRight", 1);
 		addButtonListeners("controllerUp", 2);
-		addButtonListeners("controllerDown", 3);
+		addButtonListeners("controllerDown", 3);*/
 		addButtonListeners("controllerZ", 4);
 		addButtonListeners("controllerX", 5);		
+
+		joyStickPressed = false;
+
+		function joyStickValue(relX, relY) {
+			if (Math.abs(relX) > Math.abs(relY) && relX > 0) {
+				return 1;
+			} else if (Math.abs(relY) > Math.abs(relX) && relY <= 0) {
+				return 2;
+			} else if (Math.abs(relY) > Math.abs(relX) && relY > 0) {
+				return 3;
+			}
+			return 0;
+		}
+
+		$("#controllerDirButtons").mousedown(function(evt) {
+			joyStickPressed = true;
+		});
+
+		$("#controllerDirButtons").mouseup(function(evt) {
+			// release all dir buttons.
+			releaseJoyButton(evt, 0);
+			releaseJoyButton(evt, 1);
+			releaseJoyButton(evt, 2);
+			releaseJoyButton(evt, 3);
+
+			joyStickPressed = false;
+		});
+
+		$("#controllerDirButtons").mousemove(function(evt) {
+			if (joyStickPressed) {
+				var parentOffset = $(this).parent().offset(); 
+				var relX = ((evt.pageX - parentOffset.left) / $(this).width()) * 2 - 1;
+				var relY = ((evt.pageY - parentOffset.top) / $(this).height()) * 2 - 1;
+
+				pico8_buttons[0] = pico8_buttons[0] & 48; // clear dir bits
+				var joyBits = 1 << joyStickValue(relX, relY);
+				pico8_buttons[0] = pico8_buttons[0] | joyBits; //set active bit
+			}
+		});
 		
 	</script>
 
