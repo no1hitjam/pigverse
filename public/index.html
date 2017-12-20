@@ -80,11 +80,11 @@
 			</div>
 		</div>
 		<br />
-		<div>
-			<a id="toggleController">Show/Hide Controller</a>
+		<div id="toggles">
+			<a id="toggleController" class="toggle">Toggle Controller</a><a id="toggleTwitch" class="toggle">Toggle Twitch Embed</a>
 		</div>
 
-		<div id="twitch-embed"></div>
+		<div id="twitch-embed" style="display:none"></div>
 
 		<div id="links">
 			<ul>
@@ -178,6 +178,16 @@
 				$("#controllerContainerContainer").css("display", "block");
 			} else {
 				$("#controllerContainerContainer").css("display", "none");
+			}
+		});
+
+		twitchToggle = false;
+		$("#toggleTwitch").on("click", function(evt) {
+			twitchToggle = !twitchToggle;
+			if (twitchToggle) {
+				$("#twitch-embed").css("display", "block");
+			} else {
+				$("#twitch-embed").css("display", "none");
 			}
 		});
 		

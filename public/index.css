@@ -124,10 +124,17 @@ a {
   margin-top: 10%;
 }
 
-#toggleController {
+#toggles {
+  margin: auto;
+  text-align: center;
+}
+
+.toggle {
   color: cyan;
   text-decoration: underline;
   cursor: pointer;
+  margin-left: 2em;
+  margin-right: 2em;
 }
 
 #links {
