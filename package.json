@@ -16,6 +16,7 @@
     "bufferutil": "1.2.1",
     "express": "4.13.4",
     "jquery": "^3.2.1",
+    "redis": "^2.8.0",
     "utf-8-validate": "1.2.1",
     "ws": "1.1.0"
   }
