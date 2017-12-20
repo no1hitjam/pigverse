@@ -1,6 +1,12 @@
 body {
+  color: white;
   background-color: black;
   font-family: sans-serif;
+  line-height: 2em;
+}
+
+a {
+  color: pink;
 }
 
 .canvasContainer {
@@ -112,4 +118,10 @@ body {
 #controllerX {
   float: right;
   margin-top: 10%;
+}
+
+#toggleController {
+  color: cyan;
+  text-decoration: underline;
+  cursor: pointer;
 }
