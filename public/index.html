@@ -13,8 +13,6 @@
 
 <body>
 
-	<br><br><br>
-
 	<div class="content">
 
 		<div class="canvasContainer">
@@ -81,18 +79,24 @@
 				</div>
 			</div>
 		</div>
+		<br />
+		<div>
+			<a id="toggleController">Show/Hide Controller</a>
+		</div>
+
+		<div id="twitch-embed"></div>
+
+		<div id="links">
+			<ul>
+				<li><a href="https://github.com/no1hitjam/pigverse/projects/1">Github Project Page</a></li>
+				<li><a href="https://www.twitch.tv/pigsquad">PIGSquad Twitch</a></li>
+				<li><a href="http://pigsquad.com/">PIGSquad Home Page</a></li>
+			</ul>
+		</div>
+		
 	</div>
-	<br />
-	<div>
-		<a id="toggleController">Show/Hide Controller</a>
-	</div>
-	<div id="links">
-		<ul>
-			<li><a href="https://github.com/no1hitjam/pigverse/projects/1">Github Project Page</a></li>
-			<li><a href="https://www.twitch.tv/pigsquad">PIGSquad Twitch</a></li>
-			<li><a href="http://pigsquad.com/">PIGSquad Home Page</a></li>
-		</ul>
-	</div>
+
+
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script type="text/javascript">
 		function pressJoyButton(evt, buttonIndex) {
@@ -177,6 +181,17 @@
 			}
 		});
 		
+	</script>
+
+	<script src="https://embed.twitch.tv/embed/v1.js"></script>
+
+	<!-- Create a Twitch.Embed object that will render within the "twitch-embed" root element. -->
+	<script type="text/javascript">
+		new Twitch.Embed("twitch-embed", {
+			width: "100%",
+			height: 300,
+			channel: "pigsquad"
+		});
 	</script>
 
 	<br><br>

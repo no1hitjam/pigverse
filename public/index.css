@@ -9,6 +9,10 @@ a {
   color: pink;
 }
 
+.content {
+  margin-top: 2em;
+}
+
 .canvasContainer {
   width: 100%;
   max-width:512px;
@@ -124,4 +128,14 @@ a {
   color: cyan;
   text-decoration: underline;
   cursor: pointer;
+}
+
+#links {
+  float: left;
+}
+
+#twitch-embed {
+  float: right;
+  width: 860px;
+  max-width: 100%;
 }
