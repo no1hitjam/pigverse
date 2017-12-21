@@ -327,8 +327,8 @@ function _update()
 	for monster_id in all(monster_ids) do
 		character = characters[monster_id]
 		if character.health <= 0 then
-			spawn_x = random_int() % 30 + 3
-			spawn_y = random_int() % 15 + 2
+			spawn_x = random_int() % (16 * 3)
+			spawn_y = random_int() % (16 * 2)
 			if not is_blocked(spawn_x, spawn_y) then
 				spawn_character(monster_id, spawn_x, spawn_y)
 				send_character(monster_id)
