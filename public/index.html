@@ -43,7 +43,7 @@
 			</script>
 
 			<script async type="text/javascript" src="js/pico8comjs.js"></script> <!-- Add to your html container. -->
-			<script async type="text/javascript" src="js/index.js"></script>
+			<script async type="text/javascript" src="index.js"></script>
 				
 			<script>
 				// key blocker. prevent cursor keys from scrolling page while playing cart.
@@ -112,20 +112,33 @@
 
 		function releaseJoyButton(evt, buttonIndex) {
 			evt.preventDefault();
-			var newButtons = pico8_buttons[0] & (63 ^ 1 << buttonIndex);
+			if (pico8_buttons & 1 << buttonIndex == 1 << buttonIndex) {
+				// if it was preseed, just release this button
+				var newButtons = pico8_buttons[0] & (63 ^ 1 << buttonIndex);
+			} else {
+				// if not pressed, release joystick to prevent locking joystick bug.
+				releaseJoyStick();
+			}
 			pico8_buttons[0] = newButtons;
 		}
 
-		function addButtonListeners(buttonName, buttonIndex) {
-			document.getElementById(buttonName).addEventListener("touchstart", (evt) => pressJoyButton(evt, buttonIndex));
-			document.getElementById(buttonName).addEventListener("touchend", (evt) => releaseJoyButton(evt, buttonIndex));
-			document.getElementById(buttonName).addEventListener("mousedown", (evt) => pressJoyButton(evt, buttonIndex));
-			document.getElementById(buttonName).addEventListener("mouseup", (evt) => releaseJoyButton(evt, buttonIndex));
-		}
+		$("#controllerZ").bind("mousedown touchstart", function(evt) {
+			pressJoyButton(evt, 4);
+		});
+		$("#controllerZ").bind("mouseup touchend", function(evt) {
+			evt.stopPropagation();
+			releaseJoyButton(evt, 4);
+		});
 
-		addButtonListeners("controllerZ", 4);
-		addButtonListeners("controllerX", 5);		
+		$("#controllerX").bind("mousedown touchstart", function(evt) {
+			pressJoyButton(evt, 5);
+		});
+		$("#controllerX").bind("mouseup touchend", function(evt) {
+			evt.stopPropagation();
+			releaseJoyButton(evt, 5);
+		});
 
+		
 		joyStickPressed = false;
 
 		function joyStickValue(relX, relY) {
@@ -155,6 +168,13 @@
 			}
 		}
 
+		function releaseJoyStick() {
+			joyStickPressed = false;
+			pico8_buttons[0] = pico8_buttons[0] & 48;
+			$("#controllerJoyStickKnob").css("top", "25%");
+			$("#controllerJoyStickKnob").css("left", "25%");
+		}
+
 		$("#controllerJoyStick").bind("mousedown touchstart", function(evt) {
 			joyStickPressed = true;
 		});
@@ -168,12 +188,15 @@
 			joyStickMove(evt.touches[0], $(this).parent().offset(), $(this).width(), $(this).height());
 		});
 
+		$("#controllerJoyStick").bind("mouseup touchend", function(evt) {
+			evt.stopPropagation();
+			releaseJoyStick();
+		});
+
 		// TODO: Some way to release sword and still be able to move.
 		$(window).bind("mouseup touchend", function(evt) {
+			releaseJoyStick();
 			pico8_buttons[0] = pico8_buttons[0] & 0; // clear all bits
-			joyStickPressed = false;
-			$("#controllerJoyStickKnob").css("top", "25%");
-				$("#controllerJoyStickKnob").css("left", "25%");
 		});
 
 		controllerToggle = false;
