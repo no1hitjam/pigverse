@@ -113,29 +113,31 @@
 		function releaseJoyButton(evt, buttonIndex) {
 			evt.preventDefault();
 			evt.stopPropagation();
-			if (pico8_buttons & 1 << buttonIndex == 1 << buttonIndex) {
-				// if it was preseed, just release this button
-				var newButtons = pico8_buttons[0] & (63 ^ 1 << buttonIndex);
-			} else {
-				// if not pressed, release joystick to prevent locking joystick bug.
-				releaseJoyStick();
-			}
+			var newButtons = pico8_buttons[0] & (63 ^ 1 << buttonIndex);
 			pico8_buttons[0] = newButtons;
 		}
 
 		$("#controllerZ").bind("mousedown touchstart", function(evt) {
 			pressJoyButton(evt, 4);
 		});
-		$("#controllerZ").bind("mouseup touchend", function(evt) {
-			evt.stopPropagation();
+		$("#controllerZ").bind("mouseup", function(evt) {
+			releaseJoyButton(evt, 4);
+			releaseJoyStick();
+			console.log("mouseup");
+		});
+		$("#controllerZ").bind("touchend", function(evt) {
 			releaseJoyButton(evt, 4);
 		});
+
 
 		$("#controllerX").bind("mousedown touchstart", function(evt) {
 			pressJoyButton(evt, 5);
 		});
-		$("#controllerX").bind("mouseup touchend", function(evt) {
-			evt.stopPropagation();
+		$("#controllerX").bind("mouseup", function(evt) {
+			releaseJoyButton(evt, 5);
+			releaseJoyStick();
+		});
+		$("#controllerZ").bind("touchend", function(evt) {
 			releaseJoyButton(evt, 5);
 		});
 
@@ -170,6 +172,7 @@
 		}
 
 		function releaseJoyStick() {
+			console.log("joystick released");
 			joyStickPressed = false;
 			pico8_buttons[0] = pico8_buttons[0] & 48;
 			$("#controllerJoyStickKnob").css("top", "25%");
