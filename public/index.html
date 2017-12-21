@@ -82,19 +82,13 @@
 		</div>
 		<br />
 
-		<div id="stats">
-			<span id="statKills">Kills:</span>
-		</div>
-
 		<div id="toggles">
-			<a id="toggleController" class="toggle">Toggle Controller</a><a id="toggleTwitch" class="toggle">Toggle Twitch Embed</a>
+			<a id="toggleController" class="toggle">Toggle Controller</a>
 		</div>
-
-		<div id="twitch-embed" style="display:none"></div>
 
 		<div id="links">
 			<ul>
-				<li><a href="https://github.com/no1hitjam/pigverse/projects/1">Github Project Page</a></li>
+				<li><a href="https://github.com/no1hitjam/pigverse/projects/1">Pigverse Github Project Page</a></li>
 				<li><a href="https://www.twitch.tv/pigsquad">PIGSquad Twitch</a></li>
 				<li><a href="http://pigsquad.com/">PIGSquad Home Page</a></li>
 			</ul>
@@ -213,32 +207,9 @@
 				$("#controllerContainerContainer").css("display", "none");
 			}
 		});
-
-		twitchInitialized = false;
-		twitchToggle = false;
-		$("#toggleTwitch").on("click", function(evt) {
-			twitchToggle = !twitchToggle;
-			if (twitchToggle) {
-				$("#twitch-embed").css("display", "block");
-				if (!twitchInitialized) {
-					twitchInitialized = true;
-					new Twitch.Embed("twitch-embed", {
-						width: "100%",
-						height: 300,
-						channel: "pigsquad"
-					});
-				}
-			} else {
-				$("#twitch-embed").css("display", "none");
-			}
-		});
-		
 	</script>
 
-	<script src="https://embed.twitch.tv/embed/v1.js"></script>
-
-	<br><br>
-
-</body></html>
+</body>
+</html>
 
 
