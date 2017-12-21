@@ -1,0 +1,105 @@
+
+#controllerContainerContainer {
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+  margin-top: 2em;
+}
+
+#controllerContainer {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  left: 0;
+  right: 0;
+}
+
+#controllerDummy {
+  margin-top: 40%;
+}
+
+#controllerElement {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+#controllerJoyStick {
+  background-color: #222;
+  width: 45%;
+  height: 100%;
+  max-width: 300px;
+  float: left;
+  cursor: pointer;
+  border-radius: 10%;
+}
+
+#controllerJoyStickKnob {
+  background-color: red;
+  width: 50%;
+  height: 50%;
+  position: relative;
+  top: 25%;
+  left: 25%;
+  border-radius: 50%;
+}
+
+#controllerActionButtons {
+  background-color: #222;
+  width: 45%;
+  height: 100%;
+  max-width: 300px;
+  float: right;
+  border-radius: 10%;
+}
+
+.controllerDir {
+  background-color: pink;
+  width: 33%;
+  height: 33%;
+  cursor: pointer;
+}
+
+#controllerUp {
+  margin: auto;
+}
+
+#controllerLeft {
+  display: inline-block;
+}
+
+#controllerRight {
+  float: right;
+}
+
+#controllerDown {
+  margin: auto;
+}
+
+.controllerAction {
+  background-color: teal;
+  width: 50%;
+  height: 50%;
+  cursor: pointer;
+  border-radius: 40%;
+  text-align: center;
+}
+
+.controllerAction p {
+  color: white;
+  margin-top: 25%;
+  font-size: 4.5vw;
+  font-weight: bold;
+}
+
+#controllerZ {
+  float: left;
+  margin-top: 40%;
+}
+
+#controllerX {
+  float: right;
+  margin-top: 10%;
+}
