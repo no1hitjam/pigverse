@@ -112,6 +112,7 @@
 
 		function releaseJoyButton(evt, buttonIndex) {
 			evt.preventDefault();
+			evt.stopPropagation();
 			if (pico8_buttons & 1 << buttonIndex == 1 << buttonIndex) {
 				// if it was preseed, just release this button
 				var newButtons = pico8_buttons[0] & (63 ^ 1 << buttonIndex);
@@ -209,11 +210,20 @@
 			}
 		});
 
+		twitchInitialized = false;
 		twitchToggle = false;
 		$("#toggleTwitch").on("click", function(evt) {
 			twitchToggle = !twitchToggle;
 			if (twitchToggle) {
 				$("#twitch-embed").css("display", "block");
+				if (!twitchInitialized) {
+					twitchInitialized = true;
+					new Twitch.Embed("twitch-embed", {
+						width: "100%",
+						height: 300,
+						channel: "pigsquad"
+					});
+				}
 			} else {
 				$("#twitch-embed").css("display", "none");
 			}
@@ -222,15 +232,6 @@
 	</script>
 
 	<script src="https://embed.twitch.tv/embed/v1.js"></script>
-
-	<!-- Create a Twitch.Embed object that will render within the "twitch-embed" root element. -->
-	<script type="text/javascript">
-		new Twitch.Embed("twitch-embed", {
-			width: "100%",
-			height: 300,
-			channel: "pigsquad"
-		});
-	</script>
 
 	<br><br>
 
