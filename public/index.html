@@ -40,6 +40,10 @@
 				// read and write to these values
 				var pico8_gpio = new Array(128);
 				
+				function setKillNum(killNum) {
+					console.log("setkillnum " + killNum);
+					document.getElementById('killNum').innerHTML = killNum;
+				}
 			</script>
 
 			<script async type="text/javascript" src="pico8comjs.js"></script>
@@ -85,14 +89,17 @@
 			<a id="toggleController" class="toggle">Toggle Controller</a>
 		</div>
 
+		<div id="data">
+			Kills: <span id="killNum">...</span>
+		</div>
+
 		<div id="links">
 			<ul>
 				<li><a href="https://github.com/no1hitjam/pigverse/projects/1">Pigverse Github Project Page</a></li>
 				<li><a href="https://www.twitch.tv/pigsquad">PIGSquad Twitch</a></li>
 				<li><a href="http://pigsquad.com/">PIGSquad Home Page</a></li>
 			</ul>
-		</div>
-		
+		</div>		
 	</div>
 
 

@@ -301,6 +301,10 @@ function check_attack(character)
 			sprite_type = split_str(id, "-")[2]
 			if hit_character.x == sword_pos_x and hit_character.y == sword_pos_y and sprite_type != nil then
 				hit_character.health -= 1
+				-- register kill
+				if (hit_character.health < 0) {
+					send_msg('server_kill');
+				}
 				hit_character.hurt_timer = 10
 				send_character(id)
 			end

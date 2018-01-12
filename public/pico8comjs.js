@@ -21,7 +21,6 @@ connection.onmessage = function(event)
 {
 	var data = event.data;
 	console.log('Server message ' + data + ' received');
-
 	processInput(data);
 };
 
@@ -72,7 +71,14 @@ var inputMessage = null;
 
 function processInput(message)
 {
-	inputQueue.push(message);
+	if (message.substr(0, 6) === 'server') {
+		var serverMessageData = message.split('_');
+		if (serverMessageData[1] === 'kill') {
+			setKillNum(serverMessageData[2]);
+		}
+	} else {
+		inputQueue.push(message);
+	}
 }
 
 setInterval(function()
