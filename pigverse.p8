@@ -298,9 +298,9 @@ end
 
 
 function check_attack(character)
-	--if character.powered_up == nil then
-		--character.powered_up = 0
-	--end
+	if character.powered_up == nil then
+		character.powered_up = 0
+	end
 	--if character.attack == attack_time or character.powered_up > 0 then
 	if character.attack == attack_time then
 		attack_distance = attack_time - character.attack + 1;
