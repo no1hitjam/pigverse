@@ -71,7 +71,6 @@ var inputMessage = null;
 
 function processInput(message)
 {
-	console.log('process input ' + message);
 	if (message.substr(0, 6) === 'server') {
 		var serverMessageData = message.split('_');
 		if (serverMessageData[1] === 'kill') {
@@ -81,9 +80,6 @@ function processInput(message)
 		inputQueue.push(message);
 	}
 }
-
-processInput('server_kill_3');
-console.log('dumb test');
 
 setInterval(function()
 {
