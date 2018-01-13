@@ -298,10 +298,11 @@ end
 
 
 function check_attack(character)
-	if character.powered_up == nil then
-		character.powered_up = 0
-	end
-	if character.attack == attack_time or character.powered_up > 0 then
+	--if character.powered_up == nil then
+		--character.powered_up = 0
+	--end
+	--if character.attack == attack_time or character.powered_up > 0 then
+	if character.attack == attack_time then
 		attack_distance = attack_time - character.attack + 1;
 
 		-- chop weeds
@@ -427,9 +428,9 @@ function draw_attack(character, camera_x, camera_y)
 		spr(111 + character.facing, screen_x + sword_x[character.facing] * tile_size, screen_y + sword_y[character.facing] * tile_size)
 
 		-- shooting sword
-		if character.powered_up > 0 then
-			spr(115 + character.facing, screen_x + sword_x[character.facing] * attack_distance * tile_size, screen_y + sword_y[character.facing] * attack_distance * tile_size)
-		end
+		--if character.powered_up > 0 then
+			--spr(115 + character.facing, screen_x + sword_x[character.facing] * attack_distance * tile_size, screen_y + sword_y[character.facing] * attack_distance * tile_size)
+		--end
 	end
 end
  
