@@ -103,6 +103,8 @@ end
 
 -- utilities
 
+frame = 0
+
 function random_int()
 	return flr(rnd(500))
 end
@@ -134,6 +136,7 @@ end
 attack_time = 12
 sword_x = { -1, 1, 0, 0 }
 sword_y = { 0, 0, -1, 1 }
+move_period = 20
 
 
 -- /constants
@@ -158,6 +161,10 @@ function new_player_id()
 	return new_player_id()
 end
 
+-- /players
+
+-- characters
+
 function spawn_character(id, x, y)
 	characters[id] = {}
 	characters[id].facing = 1
@@ -174,7 +181,7 @@ function send_character(id)
 	send_msg(id..'_character_'..characters[id].x..'_'..characters[id].y..'_'..characters[id].facing..'_'..characters[id].attack..'_'..characters[id].health..'_'..characters[id].hurt_timer)
 end
 
--- /players
+-- /characters
 
 
 -- start game
@@ -330,6 +337,8 @@ function _update()
 	
 	for monster_id in all(monster_ids) do
 		character = characters[monster_id]
+
+		-- respawn dead monsters
 		if character.health <= 0 then
 			spawn_x = random_int() % (16 * 3)
 			spawn_y = random_int() % (16 * 2)
@@ -338,10 +347,21 @@ function _update()
 				send_character(monster_id)
 			end
 		end
+
+		-- move monsters around randomly
+		if frame % move_period == 0 and random_int() % 3 == 0 then
+			if character.health > 0 then
+				dirs = { 'left', 'right', 'up', 'down' }
+				random_dir = dirs[random_int() % 4 + 1]
+				move(monster_id, random_dir)
+			end
+		end
 	end
 	
 	-- check server messages
 	update_msgs()
+
+	frame = frame + 1
 end
 
 -- end game
