@@ -238,6 +238,7 @@ function process_input()
 	arg5 = msg_arg(imsg, 6)
 	arg6 = msg_arg(imsg, 7)
 	arg7 = msg_arg(imsg, 8)
+	arg8 = msg_arg(imsg, 9)
 	
 	if (arg1 == "character") then
 		if (characters[id_arg] == nil) then
@@ -250,6 +251,7 @@ function process_input()
 		characters[id_arg].attack = arg5+0
 		characters[id_arg].health = arg6+0
 		characters[id_arg].hurt_timer = arg7+0
+		characters[id_arg].powered_up = arg8+0
 		
 		check_attack(characters, id_arg)
 	end
