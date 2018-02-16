@@ -213,6 +213,11 @@ function is_blocked_by(x, y)
 end
 
 function move(id, dir)
+	if characters[id].health <= 0 or characters[id].hurt_timer > 0 then
+		-- no moving when ko'd
+		return
+	end
+
 	new_x = characters[id].x
 	new_y = characters[id].y
 	move_type = split_str(id, "-")[2]
@@ -248,6 +253,7 @@ function move(id, dir)
 			hurt_character(blocked_id, 1)
 		else
 			spawn_heart((characters[id].x + new_x) / 2, (characters[id].y + new_y) / 2)
+			characters[blocked_id].health += 1
 		end
 	end
 end
@@ -363,7 +369,7 @@ function hurt_character(id, amount)
 	if (hit_character.health < 0) then
 		send_msg('server_kill');
 	end
-	hit_character.hurt_timer = 10
+	hit_character.hurt_timer = 20
 	send_character(id)
 end
 
