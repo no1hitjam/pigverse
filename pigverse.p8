@@ -254,6 +254,7 @@ function move(id, dir)
 		else
 			spawn_heart((characters[id].x + new_x) / 2, (characters[id].y + new_y) / 2)
 			characters[blocked_id].health += 1
+			characters[blocked_id].hurt_timer = 0
 			send_character(blocked_id)
 		end
 	end
